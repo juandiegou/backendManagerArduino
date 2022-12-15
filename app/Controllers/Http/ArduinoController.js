@@ -73,12 +73,12 @@ class ArduinoController {
 
 
   async mover({request, response}){
-    this.arduinoS.mover();
+    this.arduinoS.fanMove();
     response.ok();
   }
 
   async detener ({request,response}){
-    this.arduinoS.detener();
+    this.arduinoS.fanStop();
     response.ok();
   }
 }
