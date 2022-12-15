@@ -81,6 +81,17 @@ class ArduinoController {
     this.arduinoS.fanStop();
     response.ok();
   }
+
+
+  async opendoor({request, response}){
+    this.arduinoS.servoOpen();
+    response.ok();
+  }
+
+  async closedoor ({request,response}){
+    this.arduinoS.servoClose();
+    response.ok();
+  }
 }
 
 

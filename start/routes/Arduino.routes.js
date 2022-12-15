@@ -13,5 +13,7 @@ Route.group(()=> {
   Route.get("/play", `${controller}.play`);
   Route.get("/mover", `${controller}.mover`);
   Route.get("/detener", `${controller}.detener`);
+  Route.get("/servostart", `${controller}.opendoor`);
+  Route.get("/servoend", `${controller}.closedoor`);
 
 });
