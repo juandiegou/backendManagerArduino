@@ -1,12 +1,14 @@
 const Arduino = require("johnny-five")
 let manager;
 let servo;
-let sensorTemHum;
+let sensorTemp;
 let photoresistor;
 let led;
 let fan;
 let proximity;
 let piezo;
+let potentiometer;
+let buzer;
 const ligth = { value: 0 };
 const temperature = { value: 0 }
 const distance = { value: 0 }
@@ -15,7 +17,9 @@ const ligthStatics = {max:0, min: 1023}
 
 
 
-
+/***
+ * clase intermediaria que sirve para realizar la manipulacion de los sensores y acruadores haciendo uso de johnny five
+ */
 
 class ArduinoManager {
 
@@ -29,25 +33,40 @@ class ArduinoManager {
       fan = new Arduino.Motor({ pin: 5 }); // ventilador en el pin 5
       proximity = new Arduino.Proximity({ controller: "HCSR04",  pin: 7 }); //ultrasonico en la entrada analoga A0
       piezo = new Arduino.Piezo(3) //piezo en el pin 3
-      var multi = new Arduino.Multi({
-        controller: "DHT11_I2C_NANO_BACKPACK"
-      });
+      potentiometer = new Arduino.Sensor("A3"); //potenciometro en entrada A3
+      sensorTemp = new Arduino.Thermometer({controller:"LM35",pin:"A0"})
 
-      manager.repl.inject({ piezo, fan, photoresistor, servo, led,multi });
+      manager.repl.inject({ piezo, fan, photoresistor, servo, led,sensorTemp });
       
       photoresistor.on("change", function() {
         ligth.value = this.value;
       });
 
-      proximity.on("data", () =>{
-        console.log(proximity.centimeters);
-        distance.value=proximity.centimeters;
-      })
+      // proximity.on("data", () =>{
+      //   console.log(proximity.centimeters);
+      //   distance.value=proximity.centimeters;
+      // });
 
+      // sensorTemp.on("change", () =>{
+      //   console.log("temperature", sensorTemp.C)
+      // });
+
+      potentiometer.on("change", () => {
+        const {value, raw} = potentiometer;
+        const degree = this.mapToDegree(value);
+        console.log("Sensor: ");
+        console.log("  value  : ", degree);
+        console.log("-----------------");
+      });
 
 
     });
   }
+
+  mapToDegree(val){
+    return((val*1023)/180);
+  }
+
 
   ledBlink() {
     if (led) {
@@ -87,6 +106,19 @@ class ArduinoManager {
     }
   }
 
+  servoClose(){
+    if(servo){
+      servo.max();
+    }
+  }
+
+  servoOpen(){
+    if(servo){
+      servo.min();
+    }
+  }
+
+
   ligthValue() {
     if (photoresistor) {
       return (ligth);
@@ -102,22 +134,22 @@ class ArduinoManager {
         song: [
           ["C4", 1 / 4],
           ["D4", 1 / 4],
-          ["F4", 1 / 4],
-          ["D4", 1 / 4],
-          ["A4", 1 / 4],
-          [null, 1 / 4],
-          ["A4", 1],
-          ["G4", 1],
-          [null, 1 / 2],
-          ["C4", 1 / 4],
-          ["D4", 1 / 4],
-          ["F4", 1 / 4],
-          ["D4", 1 / 4],
-          ["G4", 1 / 4],
-          [null, 1 / 4],
-          ["G4", 1],
-          ["F4", 1],
-          [null, 1 / 2]
+          // ["F4", 1 / 4],
+          // ["D4", 1 / 4],
+          // ["A4", 1 / 4],
+          // [null, 1 / 4],
+          // ["A4", 1],
+          // ["G4", 1],
+          // [null, 1 / 2],
+          // ["C4", 1 / 4],
+          // ["D4", 1 / 4],
+          // ["F4", 1 / 4],
+          // ["D4", 1 / 4],
+          // ["G4", 1 / 4],
+          // [null, 1 / 4],
+          // ["G4", 1],
+          // ["F4", 1],
+          // [null, 1 / 2]
         ],
         tempo: 100
       });
@@ -137,6 +169,32 @@ class ArduinoManager {
   }
 
 
+  /***
+   * utilizado para el calculo de las estadisticas de la proxmidad
+   */
+
+  proximityStaticsCalculator(value){
+    if(distance.max<value){
+      distance.max=value;
+    }
+    if(distance.min>value){
+      distance.min = value;
+    }
+  }
+
+  /**
+   * utilizado para realizar el calculo de las estadisticas de la limuninosidad
+   * @param {*} value  valor actual del sensor
+   */
+
+  ligthStaticsCalculator(value){
+    if(ligthStatics.max<value){
+      ligthStatics.max=value;
+    }
+    if(ligthStatics.min>value){
+      ligthStatics.min = value;
+    }
+  }
 
 }
 
