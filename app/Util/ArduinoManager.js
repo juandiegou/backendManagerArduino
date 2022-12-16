@@ -31,7 +31,7 @@ class ArduinoManager {
       servo = new Arduino.Servo(10); // servo en el pin 10
       photoresistor = new Arduino.Sensor({ pin: "A2", freq: 250 }); //fotoresistencia en la entrada analoga A2
       fan = new Arduino.Motor({ pin: 5 }); // ventilador en el pin 5
-      proximity = new Arduino.Proximity({ controller: "HCSR04",  pin: 7 }); //ultrasonico en la entrada analoga A0
+      proximity = new Arduino.Proximity({ controller: "HCSR04",  pin: "A15" }); //ultrasonico en la entrada analoga A15
       piezo = new Arduino.Piezo(3) //piezo en el pin 3
       potentiometer = new Arduino.Sensor("A3"); //potenciometro en entrada A3
       sensorTemp = new Arduino.Thermometer({controller:"LM35",pin:"A0"})
@@ -52,19 +52,20 @@ class ArduinoManager {
       // });
 
       potentiometer.on("change", () => {
-        const {value, raw} = potentiometer;
-        const degree = this.mapToDegree(value);
-        console.log("Sensor: ");
-        console.log("  value  : ", degree);
-        console.log("-----------------");
+        const {value} = potentiometer;
+        const degree = this.mapToDegree(value,0,1023,0,180);
+        // console.log("Sensor: ");
+        // console.log("  value  : ", degree);
+        // console.log("-----------------");
+        this.servoToDegree(degree);
       });
 
 
     });
   }
 
-  mapToDegree(val){
-    return((val*1023)/180);
+  mapToDegree( x,  in_min,  in_max,  out_min,  out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   }
 
 
@@ -91,6 +92,12 @@ class ArduinoManager {
       return (temperature);
     } else {
       return -1;
+    }
+  }
+
+  servoToDegree(value){
+    if(servo){
+      servo.to(value);
     }
   }
 
