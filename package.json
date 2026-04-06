@@ -42,7 +42,7 @@
     "pdf-merger-js": "^3.0.5",
     "uuid": "^3.3.2",
     "winston": "^3.1.0",
-    "winston-cloudwatch": "^2.5.2"
+    "winston-cloudwatch": "^6.3.0"
   },
   "autoload": {
     "App": "./app"
