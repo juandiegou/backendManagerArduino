@@ -18,7 +18,7 @@
   "dependencies": {
     "@adonisjs/ace": "^5.0.8",
     "@adonisjs/antl": "^2.0.7",
-    "@adonisjs/auth": "^3.0.7",
+    "@adonisjs/auth": "^10.1.0",
     "@adonisjs/bodyparser": "^2.0.5",
     "@adonisjs/cors": "^1.0.7",
     "@adonisjs/fold": "^4.0.9",
@@ -39,10 +39,10 @@
     "node-excel-export": "^1.4.4",
     "on-finished": "^2.3.0",
     "openssl": "^1.1.0",
-    "pdf-merger-js": "^3.0.5",
-    "uuid": "^3.3.2",
+    "pdf-merger-js": "^5.1.2",
+    "uuid": "^14.0.0",
     "winston": "^3.1.0",
-    "winston-cloudwatch": "^2.5.2"
+    "winston-cloudwatch": "^6.3.0"
   },
   "autoload": {
     "App": "./app"
